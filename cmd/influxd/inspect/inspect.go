@@ -16,6 +16,7 @@ func NewCommand() *cobra.Command {
 	subCommands := []*cobra.Command{
 		NewReportTSMCommand(),
 		NewVerifyWALCommand(),
+		NewDumpTSMWALCommand(),
 	}
 
 	for _, command := range subCommands {
