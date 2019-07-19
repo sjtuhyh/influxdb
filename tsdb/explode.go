@@ -14,12 +14,25 @@ func DecodeName(name [16]byte) (org, bucket platform.ID) {
 	return
 }
 
+// DecodeNameSlice converts tsdb internal serialization back to organization and bucket IDs.
+func DecodeNameSlice(name []byte) (org, bucket platform.ID) {
+	return platform.ID(binary.BigEndian.Uint64(name[0:8])), platform.ID(binary.BigEndian.Uint64(name[8:16]))
+}
+
 // EncodeName converts org/bucket pairs to the tsdb internal serialization
 func EncodeName(org, bucket platform.ID) [16]byte {
 	var nameBytes [16]byte
 	binary.BigEndian.PutUint64(nameBytes[0:8], uint64(org))
 	binary.BigEndian.PutUint64(nameBytes[8:16], uint64(bucket))
 	return nameBytes
+}
+
+// EncodeOrgName converts org to the tsdb internal serialization that may be used
+// as a prefix when searching for keys matching a specific organization.
+func EncodeOrgName(org platform.ID) [8]byte {
+	var orgBytes [8]byte
+	binary.BigEndian.PutUint64(orgBytes[0:8], uint64(org))
+	return orgBytes
 }
 
 // EncodeNameString converts org/bucket pairs to the tsdb internal serialization
